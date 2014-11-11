@@ -47,6 +47,14 @@ util.print("--\n");
 
 //--------------------------------
 
+// 当該indexをチェック
+function isShuntuIndex(paiList,idx){
+    var workList = _u.rest(workList,idx);
+    
+}
+
+
+
 // input sorted list
 function firstSyuntu(paiList){
     var workList = [].concat(paiList);
@@ -78,22 +86,36 @@ function firstSyuntu(paiList){
 
 // input sorted list
 function firstKotu(paiList){
+    return firstSamePai(paiList,3);
+}
+
+function firstToitu(paiList){
+    return firstSamePai(paiList,2);
+}
+
+function firstKantu(paiList){
+    return firstSamePai(paiList,4);
+}
+
+// input sorted list
+function firstSamePai(paiList,num){
     var workList = [].concat(paiList);
     var retRest = [];
     var retKotu = [];
-    while(workList.length >= 3){
+    while(workList.length >= num){
 	var firstPai = _u.first(workList);
 	var filtedPai = _u.filter(workList,function(p){
 	    return p.equal(firstPai);
 	});
-	if (filtedPai.length >= 3) {
-	    return [filtedPai,retRest.concat(_u.rest(workList,3))];
+	if (filtedPai.length >= num) {
+	    return [filtedPai,retRest.concat(_u.rest(workList,num))];
 	}
 	workList = _u.rest(workList);
 	retRest.push(firstPai);
     }
     return [[],paiList];
 }
+
 
 // kindで分割
 function sepKind(paiList){
