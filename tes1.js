@@ -23,9 +23,14 @@ _u.each(_u.keys(paiListHash),function(ii){
 });
 util.print("--start3\n");
 
-var inPai = paiListHash[0];
-var koRetList = firstKotu(inPai);
+//var inPai = paiListHash[0];
+//var koRetList = firstKotu(inPai);
 //var syuRetList = firstSyuntu(inPai);
+
+var inPai = pai_util.strToPaiList('M1,M1,M2,M2,M3,M3,M3,M4,M4,M4,M5,M6');
+//util.print(listToString(inPai)+"\n");
+//pai_util.printPaiList(inPai);
+var koRetList = findKotu(inPai,0);
 var syuRetList = findSyuntu(inPai,0);
 util.print("--\n");
 pai_util.printPaiList(inPai);
@@ -35,10 +40,49 @@ util.print("--\n");
 pai_util.printPaiListList(syuRetList);
 util.print("--\n");
 
+var sList = serrchAllSyuntu(inPai);
+_u.each(sList,function(ll){
+    util.print("--\n");
+    pai_util.printPaiListList(ll);
+    util.print("-\n");
+    util.print("@" + listListToString(ll)+"\n");
+});
+
+
+function listToString(list){
+    return _u.reduce(list,function(memo,pai){
+	return memo+pai.toString();
+    });
+}
+
+
+function listListToString(llist){
+    return _u.reduce(llist,function(memo,list){
+	return memo + ':' + _u.reduce(list,function(memo,pai){
+	    return memo + pai.toString();
+	})
+    });
+}
 
 
 //--------------------------------
 
+// 重複しない
+function serrchAllSyuntu(paiList){
+    var retListList = [];
+    var prevPai = null;
+    for (var ii=0;ii<paiList.length;ii++){
+	if (prevPai){
+	    if (prevPai.getNum()==paiList[ii].getNum()){continue};
+	}
+	prevPai = paiList[ii];
+	var syuntu = getSyuntu(paiList,ii);
+	if (syuntu.length){
+	    retListList.push([syuntu, _u.difference(paiList,syuntu)]);
+	}
+    }
+    return retListList;
+}
 
 function searchPaiNumIndex(list,start,num){
     for (var ii=start;ii<list.length;ii++){
@@ -72,37 +116,43 @@ function findSyuntu(paiList,idx){
     return [[],paiList];
 }
 
-// input sorted list
-function firstKotu(paiList){
-    return firstSamePai(paiList,3);
+function getSamePai(paiList,idx,n){
+    var firstPai = paiList[idx];
+    var idxList = [idx];
+    for (var ii=1;ii<n;ii++){
+	var hitIdx = searchPaiNumIndex(paiList,idx+ii,firstPai.getNum());
+	if (hitIdx<0) {return [];}
+	idxList.push(hitIdx);
+    }
+    var ret = [];
+    for (var ii=0;ii<idxList.length;ii++){
+	ret.push(paiList[idxList[ii]]);
+    }
+    return ret;
 }
 
-function firstToitu(paiList){
-    return firstSamePai(paiList,2);
-}
-
-function firstKantu(paiList){
-    return firstSamePai(paiList,4);
-}
-
-// input sorted list
-function firstSamePai(paiList,num){
-    var workList = [].concat(paiList);
-    var retRest = [];
-    var retKotu = [];
-    while(workList.length >= num){
-	var firstPai = _u.first(workList);
-	var filtedPai = _u.filter(workList,function(p){
-	    return p.equal(firstPai);
-	});
-	if (filtedPai.length >= num) {
-	    return [filtedPai,retRest.concat(_u.rest(workList,num))];
+function findSamePai(paiList,idx,n){
+    for (var ii=idx;ii < paiList.length-2;ii++){
+	var kotu = getSamePai(paiList,ii,n);
+	if (kotu.length){
+	    return [kotu, _u.difference(paiList,kotu)];
 	}
-	workList = _u.rest(workList);
-	retRest.push(firstPai);
     }
     return [[],paiList];
 }
+
+function findKotu (paiList,idx){
+    return findSamePai(paiList,idx,3);
+}
+
+function findToitu (paiList,idx){
+    return findSamePai(paiList,idx,2);
+}
+
+function findKantu (paiList,idx){
+    return findSamePai(paiList,idx,4);
+}
+
 
 
 function makeAllPai(){
