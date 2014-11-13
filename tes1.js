@@ -1,27 +1,28 @@
 var _u = require('underscore');
-var util = require('util');
+//var util = require('util');
 
 var pai_util = require('./util_pai');
+var my_util = require('./my_util');
 //var paiKind = {'MANZU':0,'SOUZU':1,'PINZU':2,'SHIFU':3,'SANGEN':4};
 
-util.print("start\n");
+my_util.println("start");
 
 var paiList = _u.shuffle(makeAllPai());
 //var s = _u.sample(paiList,10);
 var tePai = _u.sample(paiList,14);
 // sort
 tePai.sort(pai_util.compare);
-_u.each(tePai,function(p){util.print(p.toString() + "\n");});
+pai_util.printPaiList(tePai);
 
 // 種類で分割
-util.print("--start2\n");
+my_util.println("--start2");
 var paiListHash = pai_util.sepKind(tePai);
 // 表示
 _u.each(_u.keys(paiListHash),function(ii){
-    util.print(_u.keys(pai_util.paiKind)[ii]+"\n");
+    my_util.println(_u.keys(pai_util.paiKind)[ii]);
     pai_util.printPaiList(paiListHash[ii]);
 });
-util.print("--start3\n");
+my_util.println("--start3");
 
 //var inPai = paiListHash[0];
 //var koRetList = firstKotu(inPai);
@@ -32,28 +33,27 @@ var inPai = pai_util.strToPaiList('M1,M1,M2,M2,M3,M3,M3,M4,M4,M4,M5,M6');
 //pai_util.printPaiList(inPai);
 var koRetList = findKotu(inPai,0);
 var syuRetList = findSyuntu(inPai,0);
-util.print("--\n");
+my_util.println("--");
 pai_util.printPaiList(inPai);
-util.print("--\n");
+my_util.println("--");
 pai_util.printPaiListList(koRetList);
-util.print("--\n");
+my_util.println("--");
 pai_util.printPaiListList(syuRetList);
-util.print("--\n");
+my_util.println("--");
 
 var sList = serrchAllSyuntu(inPai);
-_u.each(sList,function(ll){
-    util.print("--\n");
-    pai_util.printPaiListList(ll);
-    util.print("-\n");
-    util.print("@" + listListToString(ll)+"\n");
-});
+// _u.each(sList,function(ll){
+//     util.print("--\n");
+//     pai_util.printPaiListList(ll);
+//     util.print("-\n");
+//     util.print("@" + listListToString(ll)+"\n");
+// });
 
+my_util.println("----------");
+//my_util.print(sList);
 
-function listToString(list){
-    return _u.reduce(list,function(memo,pai){
-	return memo+pai.toString();
-    });
-}
+//util.print(util.inspect(sList[0]));
+
 
 
 function listListToString(llist){
@@ -63,6 +63,13 @@ function listListToString(llist){
 	})
     });
 }
+
+function listToString(list){
+    return _u.reduce(list,function(memo,pai){
+	return memo+pai.toString();
+    });
+}
+
 
 
 //--------------------------------

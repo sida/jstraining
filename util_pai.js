@@ -1,5 +1,6 @@
 // util_pai.js
-var util = require('util');
+// var util = require('util');
+var my_util = require('./my_util');
 var _u = require('underscore');
 
 var paiKind = {'MANZU':0,'SOUZU':1,'PINZU':2,'SHIFU':3,'SANGEN':4};
@@ -37,19 +38,19 @@ function _sepKind(paiList){
 function _printPaiList(l){
     _u.each(l,function(p){
 	if (p){
-	    util.print(p.toString() + ',');
+	    my_util.print(p.toString() + ',');
 	}
 	else{
-	    util.print('null,');
+	    my_util.print('null,');
 	}
     });
-    util.print("\n");
+    my_util.println("");
 }
 
 // リストリストの表示
 function _printPaiListList(l){
     _u.each(l,function(lp){
-	util.print("*");
+	my_util.print("*");
 	_printPaiList(lp);
    });
 }
