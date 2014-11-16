@@ -35,56 +35,84 @@ var koRetList = findKotu(inPai,0);
 var syuRetList = findSyuntu(inPai,0);
 my_util.println("--");
 pai_util.printPaiList(inPai);
-my_util.println("--");
-pai_util.printPaiListList(koRetList);
-my_util.println("--");
-pai_util.printPaiListList(syuRetList);
+// my_util.println("--");
+// pai_util.printPaiListList(koRetList);
+// my_util.println("--");
+// pai_util.printPaiListList(syuRetList);
 my_util.println("--");
 
-var sList = serrchAllSyuntu(inPai);
-// _u.each(sList,function(ll){
-//     util.print("--\n");
-//     pai_util.printPaiListList(ll);
-//     util.print("-\n");
-//     util.print("@" + listListToString(ll)+"\n");
-// });
+//var sList = searchAllSyuntu(inPai);
+
+var sList = parse(inPai);
+_u.each(sList,function(ll){
+    my_util.print("--\n");
+    pai_util.printPaiListList(ll);
+//    pai_util.printPaiList(listListToStringList(ll));
+});
 
 my_util.println("----------");
-//my_util.print(sList);
-
-//util.print(util.inspect(sList[0]));
 
 
+// --------------------------------------------------
 
+function parse(paiList){
+    var res = searchAllSyuntu(paiList);
+    var kotu = findKotu(paiList,0);
+    if (kotu[0].length){
+	res.push(kotu);
+    }
+    return res;    
+}
+
+function parseList(paiListList){
+    _u.each(paiListList,function(paiList){
+	// paiListの最後尾は未確認の残り牌
+	
+    });
+
+}
+
+
+
+// buggee
 function listListToString(llist){
     return _u.reduce(llist,function(memo,list){
 	return memo + ':' + _u.reduce(list,function(memo,pai){
-	    return memo + pai.toString();
+	    return memo + pai.toString()+',';
 	})
     });
 }
 
+// buggee
 function listToString(list){
     return _u.reduce(list,function(memo,pai){
 	return memo+pai.toString();
     });
 }
 
-
+// リストのリストを文字列のリストに変換する
+function paiListListToStringList(ll){
+    return _u.map(ll,function(l){
+	return _u.reduce(l,function(memo,pai){
+	    return memo+pai.toString();
+	})});}
 
 //--------------------------------
 
-// 重複しない
-function serrchAllSyuntu(paiList){
+// とれる順子を全て洗い出す
+//  重複はしない
+function searchAllSyuntu(paiList){
     var retListList = [];
     var prevPai = null;
     for (var ii=0;ii<paiList.length;ii++){
 	if (prevPai){
+	    // 同じ牌が並らんでいたらスキップ
 	    if (prevPai.getNum()==paiList[ii].getNum()){continue};
 	}
 	prevPai = paiList[ii];
 	var syuntu = getSyuntu(paiList,ii);
 	if (syuntu.length){
+	    // 順子がとれたら登録
 	    retListList.push([syuntu, _u.difference(paiList,syuntu)]);
 	}
     }
