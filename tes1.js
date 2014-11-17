@@ -1,5 +1,5 @@
 var _u = require('underscore');
-//var util = require('util');
+var util = require('util');
 
 var pai_util = require('./util_pai');
 var my_util = require('./my_util');
@@ -24,30 +24,37 @@ _u.each(_u.keys(paiListHash),function(ii){
 });
 my_util.println("--start3");
 
-//var inPai = paiListHash[0];
-//var koRetList = firstKotu(inPai);
-//var syuRetList = firstSyuntu(inPai);
-
+my_util.println("--input");
 var inPai = pai_util.strToPaiList('M1,M1,M2,M2,M3,M3,M3,M4,M4,M4,M5,M6');
-//util.print(listToString(inPai)+"\n");
-//pai_util.printPaiList(inPai);
-var koRetList = findKotu(inPai,0);
-var syuRetList = findSyuntu(inPai,0);
-my_util.println("--");
 pai_util.printPaiList(inPai);
-// my_util.println("--");
-// pai_util.printPaiListList(koRetList);
-// my_util.println("--");
-// pai_util.printPaiListList(syuRetList);
-my_util.println("--");
 
+my_util.println("--kotu");
+var koRetList = findKotu(inPai,0);
+pai_util.printPaiListList(koRetList);
+
+my_util.println("--syuntu");
+var syuRetList = findSyuntu(inPai,0);
+pai_util.printPaiListList(syuRetList);
+
+my_util.println("--all syuntu");
 //var sList = searchAllSyuntu(inPai);
+//console.log(util.inspect(inPai));
 
-var sList = parse(inPai);
+// my_util.println("----dump inp s------");
+// var m1 = [inPai,[]];
+// var m1pop = m1.shift();
+// console.log(util.inspect(m1));
+// my_util.println("----");
+// console.log(util.inspect(m1pop));
+// my_util.println("----dump e------");
+
+
+var sList1 = parse1Time([[inPai,[]]]);
+var sList = parse1Time(sList1);
+
 _u.each(sList,function(ll){
     my_util.print("--\n");
     pai_util.printPaiListList(ll);
-//    pai_util.printPaiList(listListToStringList(ll));
 });
 
 my_util.println("----------");
@@ -55,24 +62,90 @@ my_util.println("----------");
 
 // --------------------------------------------------
 
-function parse(paiList){
+    // var workLLL;
+    // if (paiLLL[1].length<=1){
+    // 	workLLL = [[].concat(paiLLL) ,[]];
+    // }
+    // else{
+    // 	workLLL = [].concat(paiLLL);
+    // }
+
+
+function parse1Time(paiLLL){
+//console.log(util.inspect(paiLLL));
+
+    workLLL = [].concat(paiLLL);
+    var res = [];
+    _u.each(workLLL,function(bodyLL){
+
+	my_util.println("--body s");
+	pai_util.printPaiListList(bodyLL);
+	my_util.println("--body e");
+
+
+	var rest = bodyLL.shift();
+
+	my_util.println("--rest s");
+	pai_util.printPaiListList(rest);
+	my_util.println("--rest e");
+
+	 // my_util.println("----dump s------");
+	 // console.log(util.inspect(rest));
+	 // my_util.println("----dump e------");
+
+	var listUpedRestLLL = listUpKotuSyuntu(rest);
+	res = [];
+	_u.each(listUpedRestLLL,function(paiLL){
+	    var newRest = paiLL.pop();
+	    var newBody = bodyLL.concat(paiLL);
+	    var newResult = [newRest,newBody];
+	    res.push(newResult);
+	});
+
+    });
+    return res;
+}
+
+function listUpKotuSyuntu(paiList){
     var res = searchAllSyuntu(paiList);
     var kotu = findKotu(paiList,0);
     if (kotu[0].length){
 	res.push(kotu);
     }
-    return res;    
+    return res;        
 }
 
-function parseList(paiListList){
-    _u.each(paiListList,function(paiList){
-	// paiListの最後尾は未確認の残り牌
+
+
+
+// function parseList(paiListList){
+//     _u.each(paiListList,function(paiList){
+// 	// paiListの最後尾は未確認の残り牌
 	
-    });
+//     });
 
-}
+// }
 
+// function parseOneLL(paiListList){
+//     var rest = [].concat(paiListList);
+//     var last = rest(pop);
 
+//     var resultLllist = searchAllSyuntu(paiList);
+//     var kotu = findKotu(paiList,0);
+//     if (kotu[0].length){
+// 	resultLllist.push(kotu);
+//     }
+//     return resultLllist;
+// }
+
+// function parseOne(paiList){
+//     var resultLllist = searchAllSyuntu(paiList);
+//     var kotu = findKotu(paiList,0);
+//     if (kotu[0].length){
+// 	resultLllist.push(kotu);
+//     }
+//     return resultLllist;
+// }
 
 // buggee
 function listListToString(llist){
@@ -90,6 +163,7 @@ function listToString(list){
     });
 }
 
+// buggee
 // リストのリストを文字列のリストに変換する
 function paiListListToStringList(ll){
     return _u.map(ll,function(l){
@@ -113,7 +187,7 @@ function searchAllSyuntu(paiList){
 	var syuntu = getSyuntu(paiList,ii);
 	if (syuntu.length){
 	    // 順子がとれたら登録
-	    retListList.push([syuntu, _u.difference(paiList,syuntu)]);
+	    retListList.push([_u.difference(paiList,syuntu) ,syuntu]);
 	}
     }
     return retListList;
@@ -145,10 +219,10 @@ function findSyuntu(paiList,idx){
     for (var ii=idx;ii < paiList.length-2;ii++){
 	var syuntu = getSyuntu(paiList,ii);
 	if (syuntu.length){
-	    return [syuntu, _u.difference(paiList,syuntu)];
+	    return [_u.difference(paiList,syuntu),syuntu];
 	}
     }
-    return [[],paiList];
+    return [paiList,[]];
 }
 
 function getSamePai(paiList,idx,n){
@@ -170,10 +244,10 @@ function findSamePai(paiList,idx,n){
     for (var ii=idx;ii < paiList.length-2;ii++){
 	var kotu = getSamePai(paiList,ii,n);
 	if (kotu.length){
-	    return [kotu, _u.difference(paiList,kotu)];
+	    return [_u.difference(paiList,kotu) ,kotu];
 	}
     }
-    return [[],paiList];
+    return [paiList,[]];
 }
 
 function findKotu (paiList,idx){
