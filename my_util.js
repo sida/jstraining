@@ -3,6 +3,9 @@ function _println_dump(l){
 }
 
 function _dump(l){
+    if (!(l instanceof Array)){
+	return "non array";
+    }
     var comma = '';
     var ret = '[';
     for (var ii=0;ii<l.length;ii++){

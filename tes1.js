@@ -49,7 +49,13 @@ my_util.println_dump(inPai);
 my_util.println("-1:parse1Time-output--------");
 var sList = parse(inPai,[]);
 my_util.println_dump(sList);
+my_util.println("-sList-");
 
+my_util.println_dump(sList[0]);
+my_util.println("-out-");
+var rr = listListToStringList(sList[0]);
+my_util.println_dump(rr);
+my_util.println_dump(rr.sort());
 
 
 // --------------------------------------------------
@@ -87,6 +93,18 @@ function listUpKotuSyuntu(paiList){
 	res.push(kotu);
     }
     return res;        
+}
+
+// [[M4,M4,M6],[M1,M2,M3],[M1,M2,M3],[M3,M4,M5]]
+// my_util.println("-l--------");
+// my_util.println_dump(l);
+// my_util.println("---");
+function listListToStringList(ll){
+    return _u.map(ll,function(l){
+	return _u.reduce(l,function (memo,p){
+	    return memo + p.toString();
+	});
+    });
 }
 
 // buggee
