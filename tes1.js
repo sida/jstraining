@@ -12,7 +12,7 @@ var paiList = _u.shuffle(makeAllPai());
 var tePai = _u.sample(paiList,14);
 // sort
 tePai.sort(pai_util.compare);
-pai_util.printPaiList(tePai);
+my_util.println_dump(tePai);
 
 // 種類で分割
 my_util.println("--start2");
@@ -20,85 +20,80 @@ var paiListHash = pai_util.sepKind(tePai);
 // 表示
 _u.each(_u.keys(paiListHash),function(ii){
     my_util.println(_u.keys(pai_util.paiKind)[ii]);
-    pai_util.printPaiList(paiListHash[ii]);
+    my_util.println_dump(paiListHash[ii]);
 });
 my_util.println("--start3");
 
+my_util.println("--test kotu");
+var kPai = pai_util.strToPaiList('M1,M1,M5,M5,M7,M8');
+my_util.println_dump(kPai);
+my_util.println_dump(listUpKotuSyuntu(kPai));
+
+
 my_util.println("--input");
 var inPai = pai_util.strToPaiList('M1,M1,M2,M2,M3,M3,M3,M4,M4,M4,M5,M6');
-pai_util.printPaiList(inPai);
+my_util.println_dump(inPai);
 
 my_util.println("--kotu");
 var koRetList = findKotu(inPai,0);
-pai_util.printPaiListList(koRetList);
+my_util.println_dump(koRetList);
 
 my_util.println("--syuntu");
 var syuRetList = findSyuntu(inPai,0);
-pai_util.printPaiListList(syuRetList);
+my_util.println_dump(syuRetList);
 
 my_util.println("--all syuntu");
-//var sList = searchAllSyuntu(inPai);
-//console.log(util.inspect(inPai));
+my_util.println("-input---------");
+my_util.println_dump([[inPai]]);
 
-// my_util.println("----dump inp s------");
-// var m1 = [inPai,[]];
-// var m1pop = m1.shift();
-// console.log(util.inspect(m1));
-// my_util.println("----");
-// console.log(util.inspect(m1pop));
-// my_util.println("----dump e------");
+my_util.println("-1:parse1Time-output--------");
+var sList = parse1Time([[inPai]]);
+my_util.println_dump(sList);
+my_util.println("-2:parse1Time-output--------");
+var sList2 = parse1Time(sList);
+my_util.println_dump(sList2);
 
-
-var sList1 = parse1Time([[inPai,[]]]);
-var sList = parse1Time(sList1);
-
-_u.each(sList,function(ll){
-    my_util.print("--\n");
-    pai_util.printPaiListList(ll);
-});
-
-my_util.println("----------");
 
 
 // --------------------------------------------------
 
-    // var workLLL;
-    // if (paiLLL[1].length<=1){
-    // 	workLLL = [[].concat(paiLLL) ,[]];
-    // }
-    // else{
-    // 	workLLL = [].concat(paiLLL);
-    // }
+// my_util.println("-rest--------");
+// my_util.println_dump(rest);
+// my_util.println("--");
 
 
 function parse1Time(paiLLL){
-//console.log(util.inspect(paiLLL));
-
     workLLL = [].concat(paiLLL);
     var res = [];
-    _u.each(workLLL,function(bodyLL){
-
-	my_util.println("--body s");
-	pai_util.printPaiListList(bodyLL);
-	my_util.println("--body e");
-
-
-	var rest = bodyLL.shift();
-
-	my_util.println("--rest s");
-	pai_util.printPaiListList(rest);
-	my_util.println("--rest e");
-
-	 // my_util.println("----dump s------");
-	 // console.log(util.inspect(rest));
-	 // my_util.println("----dump e------");
-
+    _u.each(workLLL,function(oneLineLL){
+	var rest = oneLineLL.shift();
+	var parsedLL = oneLineLL;
 	var listUpedRestLLL = listUpKotuSyuntu(rest);
-	res = [];
 	_u.each(listUpedRestLLL,function(paiLL){
-	    var newRest = paiLL.pop();
-	    var newBody = bodyLL.concat(paiLL);
-	    var newResult = [newRest,newBody];
+	    var newRest = paiLL.shift();
+	    var newBody = parsedLL.concat(paiLL);
+	    newBody.unshift(newRest);
+	    var newResult = newBody;
+	    res.push(newResult);
+	});
+
+    });
+    return res;
+}
+
+
+function parse1Time_bak1(paiLLL){
+    workLLL = [].concat(paiLLL);
+    var res = [];
+    _u.each(workLLL,function(oneLineLL){
+	var rest = oneLineLL.shift();
+	var parsedLL = oneLineLL;
+	var listUpedRestLLL = listUpKotuSyuntu(rest);
+	_u.each(listUpedRestLLL,function(paiLL){
+	    var newRest = paiLL.shift();
+	    var newBody = parsedLL.concat(paiLL);
+	    newBody.unshift(newRest);
+	    var newResult = newBody;
 	    res.push(newResult);
 	});
 
@@ -109,13 +104,11 @@ function parse1Time(paiLLL){
 function listUpKotuSyuntu(paiList){
     var res = searchAllSyuntu(paiList);
     var kotu = findKotu(paiList,0);
-    if (kotu[0].length){
+    if (kotu[1].length){
 	res.push(kotu);
     }
     return res;        
 }
-
-
 
 
 // function parseList(paiListList){
