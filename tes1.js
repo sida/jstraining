@@ -44,14 +44,14 @@ my_util.println_dump(syuRetList);
 
 my_util.println("--all syuntu");
 my_util.println("-input---------");
-my_util.println_dump([[inPai]]);
+my_util.println_dump(inPai);
 
 my_util.println("-1:parse1Time-output--------");
-var sList = parse1Time([[inPai]]);
+var sList = parse(inPai,[]);
 my_util.println_dump(sList);
-my_util.println("-2:parse1Time-output--------");
-var sList2 = parse1Time(sList);
-my_util.println_dump(sList2);
+// my_util.println("-2:parse1Time-output--------");
+// var sList2 = parse1Time(sList);
+// my_util.println_dump(sList2);
 
 
 
@@ -62,21 +62,64 @@ my_util.println_dump(sList2);
 // my_util.println("--");
 
 
-function parse1Time(paiLLL){
-    workLLL = [].concat(paiLLL);
-    var res = [];
-    _u.each(workLLL,function(oneLineLL){
-	var rest = oneLineLL.shift();
-	var parsedLL = oneLineLL;
-	var listUpedRestLLL = listUpKotuSyuntu(rest);
-	_u.each(listUpedRestLLL,function(paiLL){
-	    var newRest = paiLL.shift();
-	    var newBody = parsedLL.concat(paiLL);
-	    newBody.unshift(newRest);
-	    var newResult = newBody;
-	    res.push(newResult);
-	});
+function parse(restL,parsedLL){
+my_util.println("-in : restL--------");
+my_util.println_dump(restL);
+my_util.println("-in : parsedLL--------");
+my_util.println_dump(parsedLL);
+my_util.println("--");
 
+    var listUpedRestLLL = listUpKotuSyuntu(restL);
+my_util.println("-in : listUpedRestLLL--------");
+my_util.println_dump(listUpedRestLLL);
+my_util.println("--");
+
+    if (listUpedRestLLL.length==0){
+my_util.println("--in length is 0");
+my_util.println("-in : restL--------");
+my_util.println_dump(restL);
+my_util.println("-in : parsedLL--------");
+my_util.println_dump(parsedLL);
+my_util.println("--");
+	parsedLL.unshift(restL);
+my_util.println_dump(parsedLL);
+my_util.println("--");
+	return parsedLL;
+    }
+    var res = [];
+my_util.println("-listUpedRestLLL--------");
+my_util.println_dump(listUpedRestLLL);
+my_util.println("--");
+
+    _u.each(listUpedRestLLL,function(paiLL){
+	var newRest = paiLL.shift();
+	var newBody = parsedLL.concat(paiLL);
+	var retParse = parse(newRest,newBody);
+	res.push(retParse);
+    });
+    return res;
+}
+
+
+// in : [[rest],[parsed],[parsed],…]
+// out : [ [[rest],[parsed],[parsed],…] ,[[rest],[parsed],[parsed],…] ,[[rest],[parsed],[parsed],…] ,… ]
+function parse1Time_bak2(paiLL){
+    if (!paiLL.length) {return;}
+    workLL = [].concat(paiLL);
+    var restL = workLL.shift(); // 残り分
+    var parsedLL = workLL; //抜きだし済
+    var listUpedRestLLL = listUpKotuSyuntu(restL);
+    if (!listUpedRestLLL.length){return;}
+    _u.each(listUpedRestLLL,function(paiLL){
+	
+//	var parsed = parse1Time(paiLL);
+
+	var newRest = paiLL.shift();
+	var newBody = parsedLL.concat(paiLL);
+	newBody.unshift(newRest);
+	var newResult = newBody;
+	parse1Time(newResult);
+	res.push(newResult);
     });
     return res;
 }
