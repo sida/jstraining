@@ -29,7 +29,7 @@ function _sepKind(paiList){
     _u.each(kList,function (k){
 	var kind = paiKind[k];
 	var f = _u.filter(paiList,function(p){return p.getKind()==kind;});
-	ret[kind]=f;
+	ret[k]=f;
     });
     return ret;
 }

@@ -9,33 +9,132 @@ my_util.println("start");
 // 入力データ
 //var inPai = pai_util.strToPaiList('M1,M1,M2,M2,M3,M3,M3,M4,M4,M4,M5,M6');
 //var inPai = pai_util.strToPaiList('M1,M1,M2,M2,M3,M3,M3,M4,M4,M4,M5');
-var inPai = pai_util.strToPaiList('M1,M1,M2,M2,M3,M3,M3,M4,M4,M4,M5,M6,M6,M6');
+//var inPai = pai_util.strToPaiList('M1,M1,M2,M2,M3,M3,M3,M4,M4,M4,M5,M6,M6,M6');
+var inPai = pai_util.strToPaiList('M1,S1,M2,S2,M3,P3,P3,P4,M4,M4,P5,M6,M6,P6');
+// sort
+inPai.sort(pai_util.compare);
 
 my_util.println("-input---------");
 my_util.println_dump(inPai);
 
 // 種類で分割
-// my_util.println("--split kind");
-// var paiListHash = pai_util.sepKind(tePai);
+my_util.println("--split kind");
+var paiListHash = pai_util.sepKind(inPai);
+// 種類毎に分割
+var kresu = {};
+_u.each(paiListHash,function(v,k){
+    my_util.print(k+":");
+    my_util.println_dump(v);
+    kresu[k] = parse(v);
+});
+// 表示
+_u.each(kresu,function(v,k){
+    my_util.print(k+":\n");
+    print_parsedResult(v);
+});
+my_util.println("-final---------");
+my_util.println_dump(tes(kresu));
+
+// 全パターン組み合せ
+function tes(inHash){
+    var inList = _u.values(inHash);
+    return _tes(inList);
+}
+
+function _tes(kresu){
+    var o = kresu.pop();
+    if ((_u.keys(kresu)).length==0){
+	var first = [];
+	_u.each(o,function(ol,k){
+	    first.push(ol);
+	});
+	return first;
+    }
+    var r = _tes(kresu);
+    // o と r を結合して返す
+    //if ((_u.keys(o)).length==0){return r;}
+    var ret = [];
+    _u.each(o,function(ol,k){
+	    my_util.println("-ol---------");
+	    my_util.println_dump(ol);
+	    my_util.println("--");
+
+	_u.each(r,function(rl){
+	    var n = [];
+	    n.concat(ol);
+	    n.concat(rl);
+	    my_util.println("-n---------");
+	    my_util.println_dump(n);
+	    my_util.println("--");
+
+	    ret.push(n);
+	});
+    });
+    return ret;
+}
+
+
+_u.each(kresu,function(v,k){
+    var res = [];
+    _u.each(v,function(ll,keyStr){
+	var line = [];
+	line.unshift(ll);
+	
+    });
+    
+});
+
+
+
+
+
+// my_util.println_dump(kresu['MANZU']);
+
+
+// var t = parse(paiListHash[0]);
+// _u.each(t,function(v,k){
+//     my_util.print(k+':');
+//     my_util.println_dump(v);
+// });
+
 // // 表示
+// var kresu = {};
 // _u.each(paiListHash,function(v,k){
 //     my_util.print(k+":");
 //     my_util.println_dump(v);
+//     var t = parse(v);
+//     kresu[k+'#'] = t;
 // });
+
+// my_util.println("--start3");
+// _u.each(kresu,function(v,k){
+//     my_util.print(k+":");
+//     my_util.println_dump(v);
+// });
+
 // my_util.println("--start3");
 
-var sList = parse(toituPattern);
-my_util.println("-output---------");
-_u.each(sList,function(v,k){
-    my_util.print(k+':');
-    my_util.println_dump(v);
-});
+// my_util.println_dump(inPai);
 
+// var sList = parse(inPai);
+// my_util.println("-output---------");
+// _u.each(sList,function(v,k){
+//     my_util.print(k+':');
+//     my_util.println_dump(v);
+// });
+
+
+function print_parsedResult(r){
+    _u.each(r,function(v,k){
+	my_util.print(k+':');
+	my_util.println_dump(v);
+    });
+}
 
 function parse(inPaiList){
     var result = {};
 
-    // 先に対子を取った組み合せ
+    // 先に対子を取った組み合せを作る
     var toituPattern = searchAllToitu(inPaiList);
     // 組み合せを作る
     _u.each(toituPattern,function(ll){
@@ -43,7 +142,7 @@ function parse(inPaiList){
 	rest.push(ll[1]);
 	_parse(ll[0],rest,result);
     });
-    // そのまま組み合せ作る
+    // そのままで組み合せを作る
     _parse(inPaiList,[],result);
 
     return result;
@@ -53,7 +152,10 @@ function _parse(restL,parsedLL,result){
     var listUpedRestLLL = listUpKotuSyuntu(restL);
     if (listUpedRestLLL.length==0){
 	// 引数を解析してももうなにもでなかったので引数を合成して返す
-	parsedLL.unshift(restL);
+	if (parsedLL.length==0){return;}
+	if (restL.length>0){
+	    parsedLL.unshift(restL);
+	}
 	var key = mkLLKey(parsedLL);
 	result[key] = parsedLL;
 	return;
