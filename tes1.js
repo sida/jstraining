@@ -18,9 +18,9 @@ my_util.println_dump(tePai);
 my_util.println("--start2");
 var paiListHash = pai_util.sepKind(tePai);
 // 表示
-_u.each(_u.keys(paiListHash),function(ii){
-    my_util.println(_u.keys(pai_util.paiKind)[ii]);
-    my_util.println_dump(paiListHash[ii]);
+_u.each(paiListHash,function(v,k){
+    my_util.print(k+":");
+    my_util.println_dump(v);
 });
 my_util.println("--start3");
 
@@ -42,38 +42,52 @@ my_util.println("--syuntu");
 var syuRetList = findSyuntu(inPai,0);
 my_util.println_dump(syuRetList);
 
-my_util.println("--all syuntu");
+my_util.println("--all toitu");
 my_util.println("-input---------");
 my_util.println_dump(inPai);
+var toituPattern = searchAllToitu(inPai);
+my_util.println_dump(toituPattern);
+
+my_util.println("--all pattern");
+my_util.println("-input---------");
+toituPattern.push([inPai,[]]);
+
+my_util.println_dump(toituPattern);
 
 my_util.println("-1:parse1Time-output--------");
-var sList = parse(inPai,[]);
-my_util.println_dump(sList);
-my_util.println("-sList-");
-
-my_util.println_dump(sList[0]);
-my_util.println("-out-");
-var rr = listListToStringList(sList[0]);
-my_util.println_dump(rr);
-my_util.println_dump(rr.sort());
+var sList = parseStart(toituPattern);
+_u.each(sList,function(v,k){
+    my_util.print(k+':');
+    my_util.println_dump(v);
+});
 
 
-// --------------------------------------------------
+function parseStart(inLLL){
+    var result = {};
+    _u.each(inLLL,function(ll){
+	var rest = [];
+	if (ll[1].length>0){rest.push(ll[1]);}
 
-// my_util.println("-rest--------");
-// my_util.println_dump(rest);
-// my_util.println("--");
+	my_util.println("-in-------");
+	my_util.println_dump(ll);
+	my_util.println_dump(ll[0]);
+	my_util.println_dump(ll[1]);
+	my_util.println_dump(rest);
 
+	my_util.println("--");
+	parse(ll[0],rest,result);
+    });
+    return result;
+}
 
-function parse(restL,parsedLL){
-    var result = [];
-
+function parse(restL,parsedLL,result){
     function _parse(restL,parsedLL,result){
 	var listUpedRestLLL = listUpKotuSyuntu(restL);
 	if (listUpedRestLLL.length==0){
 	    // 引数を解析してももうなにもでなかったので引数を合成して返す
 	    parsedLL.unshift(restL);
-	    result.push(parsedLL);
+	    var key = mkLLKey(parsedLL);
+	    result[key] = parsedLL;
 	    return;
 	}
 	_u.each(listUpedRestLLL,function(paiLL){
@@ -95,6 +109,11 @@ function listUpKotuSyuntu(paiList){
     return res;        
 }
 
+
+function mkLLKey(ll){
+    return listToStringList(listListToStringList(ll).sort());
+}
+
 // [[M4,M4,M6],[M1,M2,M3],[M1,M2,M3],[M3,M4,M5]]
 // my_util.println("-l--------");
 // my_util.println_dump(l);
@@ -106,6 +125,13 @@ function listListToStringList(ll){
 	});
     });
 }
+
+function listToStringList(l){
+    return _u.reduce(l,function (memo,p){
+	return memo + p.toString();
+    });
+}
+
 
 // buggee
 function listListToString(llist){
@@ -152,6 +178,27 @@ function searchAllSyuntu(paiList){
     }
     return retListList;
 }
+
+// とれる対子を全て洗い出す
+function searchAllToitu(paiList){
+    var retListList = [];
+    var prevPai = null;
+    for (var ii=0;ii<paiList.length;ii++){
+	if (prevPai){
+	    // 同じ牌が並らんでいたらスキップ
+	    if (prevPai.getNum()==paiList[ii].getNum()){continue};
+	}
+	prevPai = paiList[ii];
+	var toitu = getSamePai(paiList,ii,2);
+	if (toitu.length){
+	    // 対子がとれたら登録
+	    retListList.push([_u.difference(paiList,toitu) ,toitu]);
+	}
+    }
+    return retListList;
+}
+
+
 
 function searchPaiNumIndex(list,start,num){
     for (var ii=start;ii<list.length;ii++){
