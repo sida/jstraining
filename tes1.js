@@ -31,7 +31,9 @@ my_util.println_dump(listUpKotuSyuntu(kPai));
 
 
 my_util.println("--input");
-var inPai = pai_util.strToPaiList('M1,M1,M2,M2,M3,M3,M3,M4,M4,M4,M5,M6');
+//var inPai = pai_util.strToPaiList('M1,M1,M2,M2,M3,M3,M3,M4,M4,M4,M5,M6');
+//var inPai = pai_util.strToPaiList('M1,M1,M2,M2,M3,M3,M3,M4,M4,M4,M5');
+var inPai = pai_util.strToPaiList('M1,M1,M2,M2,M3,M3,M3,M4,M4,M4,M5,M6,M6,M6');
 my_util.println_dump(inPai);
 
 my_util.println("--kotu");
@@ -55,49 +57,37 @@ toituPattern.push([inPai,[]]);
 my_util.println_dump(toituPattern);
 
 my_util.println("-1:parse1Time-output--------");
-var sList = parseStart(toituPattern);
+var sList = parse(toituPattern);
 _u.each(sList,function(v,k){
     my_util.print(k+':');
     my_util.println_dump(v);
 });
 
 
-function parseStart(inLLL){
+function parse(inLLL){
     var result = {};
     _u.each(inLLL,function(ll){
 	var rest = [];
 	if (ll[1].length>0){rest.push(ll[1]);}
-
-	my_util.println("-in-------");
-	my_util.println_dump(ll);
-	my_util.println_dump(ll[0]);
-	my_util.println_dump(ll[1]);
-	my_util.println_dump(rest);
-
-	my_util.println("--");
-	parse(ll[0],rest,result);
+	_parse(ll[0],rest,result);
     });
     return result;
 }
 
-function parse(restL,parsedLL,result){
-    function _parse(restL,parsedLL,result){
-	var listUpedRestLLL = listUpKotuSyuntu(restL);
-	if (listUpedRestLLL.length==0){
-	    // 引数を解析してももうなにもでなかったので引数を合成して返す
-	    parsedLL.unshift(restL);
-	    var key = mkLLKey(parsedLL);
-	    result[key] = parsedLL;
-	    return;
-	}
-	_u.each(listUpedRestLLL,function(paiLL){
-	    var newRest = paiLL.shift();
-	    var newBody = parsedLL.concat(paiLL);
-	    _parse(newRest,newBody,result);
-	});
+function _parse(restL,parsedLL,result){
+    var listUpedRestLLL = listUpKotuSyuntu(restL);
+    if (listUpedRestLLL.length==0){
+	// 引数を解析してももうなにもでなかったので引数を合成して返す
+	parsedLL.unshift(restL);
+	var key = mkLLKey(parsedLL);
+	result[key] = parsedLL;
+	return;
     }
-    _parse(restL,parsedLL,result);
-    return result;
+    _u.each(listUpedRestLLL,function(paiLL){
+	var newRest = paiLL.shift();
+	var newBody = parsedLL.concat(paiLL);
+	_parse(newRest,newBody,result);
+    });
 }
 
 function listUpKotuSyuntu(paiList){
@@ -120,6 +110,7 @@ function mkLLKey(ll){
 // my_util.println("---");
 function listListToStringList(ll){
     return _u.map(ll,function(l){
+	if (l.length==0) return 'N';// 残りパートが無くなると通る
 	return _u.reduce(l,function (memo,p){
 	    return memo + p.toString();
 	});
@@ -128,7 +119,7 @@ function listListToStringList(ll){
 
 function listToStringList(l){
     return _u.reduce(l,function (memo,p){
-	return memo + p.toString();
+	return memo + '-' + p.toString();
     });
 }
 
