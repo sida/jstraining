@@ -110,8 +110,8 @@ function print_parsedResult(r){
 }
 
 function parse(inPaiList){
+    if (inPaiList.length<3){return [inPaiList];}
     var result = {};
-
     // 先に対子を取った組み合せを作る
     var toituPattern = searchAllToitu(inPaiList);
     // 組み合せを作る

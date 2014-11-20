@@ -3,83 +3,57 @@ var util = require('util');
 
 var pai_util = require('./util_pai');
 var my_util = require('./my_util');
-//var paiKind = {'MANZU':0,'SOUZU':1,'PINZU':2,'SHIFU':3,'SANGEN':4};
 
 my_util.println("start");
 
-var paiList = _u.shuffle(makeAllPai());
-//var s = _u.sample(paiList,10);
-var tePai = _u.sample(paiList,14);
-// sort
-tePai.sort(pai_util.compare);
-my_util.println_dump(tePai);
-
-// 種類で分割
-my_util.println("--start2");
-var paiListHash = pai_util.sepKind(tePai);
-// 表示
-_u.each(paiListHash,function(v,k){
-    my_util.print(k+":");
-    my_util.println_dump(v);
-});
-my_util.println("--start3");
-
-my_util.println("--test kotu");
-var kPai = pai_util.strToPaiList('M1,M1,M5,M5,M7,M8');
-my_util.println_dump(kPai);
-my_util.println_dump(listUpKotuSyuntu(kPai));
-
-
-my_util.println("--input");
+// 入力データ
 //var inPai = pai_util.strToPaiList('M1,M1,M2,M2,M3,M3,M3,M4,M4,M4,M5,M6');
 //var inPai = pai_util.strToPaiList('M1,M1,M2,M2,M3,M3,M3,M4,M4,M4,M5');
 //var inPai = pai_util.strToPaiList('M1,M1,M2,M2,M3,M3,M3,M4,M4,M4,M5,M6,M6,M6');
-var inPai = pai_util.strToPaiList('M1,M1');
-my_util.println_dump(inPai);
+//var inPai = pai_util.strToPaiList('M1,S1,M2,S2,M3,P3,P3,P4,M4,M4,P5,M6,M6,P6');
+var inPai = pai_util.strToPaiList('S1,S2');
+// sort
+inPai.sort(pai_util.compare);
 
-my_util.println("--kotu");
-var koRetList = findKotu(inPai,0);
-my_util.println_dump(koRetList);
-
-my_util.println("--syuntu");
-var syuRetList = findSyuntu(inPai,0);
-my_util.println_dump(syuRetList);
-
-my_util.println("--all toitu");
 my_util.println("-input---------");
 my_util.println_dump(inPai);
-var toituPattern = searchAllToitu(inPai);
-my_util.println_dump(toituPattern);
 
-my_util.println("--all pattern");
-my_util.println("-input---------");
-toituPattern.push([inPai,[]]);
+my_util.println("-list up syuntu---------");
+var listUpedRestLLL = listUpKotuSyuntu(inPai);
+my_util.println_dump(listUpedRestLLL);
 
-my_util.println_dump(toituPattern);
-
-my_util.println("-1:parse1Time-output--------");
-var sList = parse(toituPattern);
-_u.each(sList,function(v,k){
-    my_util.print(k+':');
-    my_util.println_dump(v);
-});
+var re = parse(inPai);
+my_util.println("-result---------");
+my_util.println_dump(re);
 
 
-function parse(inLLL){
+function parse(inPaiList){
+    if (inPaiList.length<3){return [inPaiList];}
     var result = {};
-    _u.each(inLLL,function(ll){
+
+    // 先に対子を取った組み合せを作る
+    var toituPattern = searchAllToitu(inPaiList);
+    // 組み合せを作る
+    _u.each(toituPattern,function(ll){
 	var rest = [];
-	if (ll[1].length>0){rest.push(ll[1]);}
+	rest.push(ll[1]);
 	_parse(ll[0],rest,result);
     });
-    return result;
+    // そのままで組み合せを作る
+    _parse(inPaiList,[],result);
+
+    // ユニーク化のためのキーを外してリストに変換する
+    return _u.values(result);
 }
 
 function _parse(restL,parsedLL,result){
     var listUpedRestLLL = listUpKotuSyuntu(restL);
     if (listUpedRestLLL.length==0){
 	// 引数を解析してももうなにもでなかったので引数を合成して返す
-	parsedLL.unshift(restL);
+	if (parsedLL.length==0){return;}
+	if (restL.length>0){
+	    parsedLL.unshift(restL);
+	}
 	var key = mkLLKey(parsedLL);
 	result[key] = parsedLL;
 	return;
