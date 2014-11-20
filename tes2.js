@@ -30,8 +30,9 @@ _u.each(paiListHash,function(v,k){
 // 表示
 _u.each(kresu,function(v,k){
     my_util.print(k+":\n");
-    print_parsedResult(v);
+    my_util.println_dump(v);
 });
+
 my_util.println("-final---------");
 my_util.println_dump(tes(kresu));
 
@@ -43,25 +44,16 @@ function tes(inHash){
 
 function _tes(kresu){
     var o = kresu.pop();
-    if ((_u.keys(kresu)).length==0){
-	var first = [];
-	_u.each(o,function(ol,k){
-	    first.push(ol);
-	});
-	return first;
+    if (kresu.length==0){
+	return o;
     }
     var r = _tes(kresu);
     // o と r を結合して返す
     //if ((_u.keys(o)).length==0){return r;}
     var ret = [];
-    _u.each(o,function(ol,k){
-	    my_util.println("-ol---------");
-	    my_util.println_dump(ol);
-	    my_util.println("--");
-
+    _u.each(o,function(ol){
 	_u.each(r,function(rl){
-	    var n = [];
-	    n.concat(ol);
+	    var n = ol;
 	    n.concat(rl);
 	    my_util.println("-n---------");
 	    my_util.println_dump(n);
@@ -72,20 +64,6 @@ function _tes(kresu){
     });
     return ret;
 }
-
-
-_u.each(kresu,function(v,k){
-    var res = [];
-    _u.each(v,function(ll,keyStr){
-	var line = [];
-	line.unshift(ll);
-	
-    });
-    
-});
-
-
-
 
 
 // my_util.println_dump(kresu['MANZU']);
@@ -145,7 +123,8 @@ function parse(inPaiList){
     // そのままで組み合せを作る
     _parse(inPaiList,[],result);
 
-    return result;
+    // ユニーク化のためのキーを外してリストに変換する
+    return _u.values(result);
 }
 
 function _parse(restL,parsedLL,result){
