@@ -33,85 +33,44 @@ _u.each(kresu,function(v,k){
     my_util.println_dump(v);
 });
 
-my_util.println("-final---------");
-my_util.println_dump(tes(kresu));
+/*
 
-// 全パターン組み合せ
-function tes(inHash){
-    var inList = _u.values(inHash);
-my_util.println_dump(inList);
-    return _tes(inList);
-}
+sida@tristar:~/develop/jstraining$ node tes3.js
+start
+-input---------
+[M1,M2,M3,M4,M4,M6,M6,S1,S2,P3,P3,P4,P5,P6]
+--split kind
+MANZU:[M1,M2,M3,M4,M4,M6,M6]
+SOUZU:[S1,S2]
+PINZU:[P3,P3,P4,P5,P6]
+SHIFU:[]
+SANGEN:[]
+MANZU:
+[
+  [[M4,M4],[M6,M6],[M1,M2,M3]],
+  [[M1,M4],[M6,M6],[M2,M3,M4]],
+  [[M4,M4,M6,M6],[M1,M2,M3]],
+  [[M1,M4,M6,M6],[M2,M3,M4]]
+]
+SOUZU:
+[
+  [[S1,S2]]
+]
+PINZU:
+[
+  [[P3,P3],[P4,P5,P6]],
+  [[P3,P6],[P3,P4,P5]]
+]
 
-function _tes(kresu){
-    var o = kresu.pop();
-    if (kresu.length==0){
-	return o;
-    }
-    var r = _tes(kresu);
-    // o と r を結合して返す
-    //if ((_u.keys(o)).length==0){return r;}
-    var ret = [];
-    _u.each(o,function(ol){
-	_u.each(r,function(rl){
-	    var n = ol;
-	    n.concat(rl);
-	    my_util.println("-n---------");
-	    my_util.println_dump(n);
-	    my_util.println("--");
+SHIFU:
+[[[]]]
+SANGEN:
+[[[]]]
 
-	    ret.push(n);
-	});
-    });
-    return ret;
-}
-
-
-// my_util.println_dump(kresu['MANZU']);
-
-
-// var t = parse(paiListHash[0]);
-// _u.each(t,function(v,k){
-//     my_util.print(k+':');
-//     my_util.println_dump(v);
-// });
-
-// // 表示
-// var kresu = {};
-// _u.each(paiListHash,function(v,k){
-//     my_util.print(k+":");
-//     my_util.println_dump(v);
-//     var t = parse(v);
-//     kresu[k+'#'] = t;
-// });
-
-// my_util.println("--start3");
-// _u.each(kresu,function(v,k){
-//     my_util.print(k+":");
-//     my_util.println_dump(v);
-// });
-
-// my_util.println("--start3");
-
-// my_util.println_dump(inPai);
-
-// var sList = parse(inPai);
-// my_util.println("-output---------");
-// _u.each(sList,function(v,k){
-//     my_util.print(k+':');
-//     my_util.println_dump(v);
-// });
-
-
-function print_parsedResult(r){
-    _u.each(r,function(v,k){
-	my_util.print(k+':');
-	my_util.println_dump(v);
-    });
-}
+*/
 
 function parse(inPaiList){
-    if (inPaiList.length<3){return [inPaiList];}
+    if (inPaiList.length<3){return [[inPaiList]];}
     var result = {};
     // 先に対子を取った組み合せを作る
     var toituPattern = searchAllToitu(inPaiList);
