@@ -33,7 +33,8 @@ my_util.println_dump(listUpKotuSyuntu(kPai));
 my_util.println("--input");
 //var inPai = pai_util.strToPaiList('M1,M1,M2,M2,M3,M3,M3,M4,M4,M4,M5,M6');
 //var inPai = pai_util.strToPaiList('M1,M1,M2,M2,M3,M3,M3,M4,M4,M4,M5');
-var inPai = pai_util.strToPaiList('M1,M1,M2,M2,M3,M3,M3,M4,M4,M4,M5,M6,M6,M6');
+//var inPai = pai_util.strToPaiList('M1,M1,M2,M2,M3,M3,M3,M4,M4,M4,M5,M6,M6,M6');
+var inPai = pai_util.strToPaiList('M1,M1');
 my_util.println_dump(inPai);
 
 my_util.println("--kotu");
