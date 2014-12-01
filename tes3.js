@@ -126,33 +126,6 @@ function listToStringList(l){
     });
 }
 
-
-// buggee
-function listListToString(llist){
-    return _u.reduce(llist,function(memo,list){
-	return memo + ':' + _u.reduce(list,function(memo,pai){
-	    return memo + pai.toString()+',';
-	})
-    });
-}
-
-// buggee
-function listToString(list){
-    return _u.reduce(list,function(memo,pai){
-	return memo+pai.toString();
-    });
-}
-
-// buggee
-// リストのリストを文字列のリストに変換する
-function paiListListToStringList(ll){
-    return _u.map(ll,function(l){
-	return _u.reduce(l,function(memo,pai){
-	    return memo+pai.toString();
-	})});}
-
-//--------------------------------
-
 // とれる順子を全て洗い出す
 //  重複はしない
 function searchAllSyuntu(paiList){

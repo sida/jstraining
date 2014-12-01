@@ -34,27 +34,6 @@ function _sepKind(paiList){
     return ret;
 }
 
-// リストの表示
-function _printPaiList(l){
-    _u.each(l,function(p){
-	if (p){
-	    my_util.print(p.toString() + ',');
-	}
-	else{
-	    my_util.print('null,');
-	}
-    });
-    my_util.println("");
-}
-
-// リストリストの表示
-function _printPaiListList(l){
-    _u.each(l,function(lp){
-	my_util.print("*");
-	_printPaiList(lp);
-   });
-}
-
 function _definePai (k,n,s){
     var kind = k;
     var num = n;
@@ -86,8 +65,6 @@ module.exports = {
     'kindToStr' : _kindToStr,
     'compare' :  _compare,
     'sepKind' : _sepKind,
-    'printPaiListList' : _printPaiListList,
-    'printPaiList' : _printPaiList,
     'paiKind' : paiKind,
     'strToPaiList' : _strToPaiList,
     'definePai' : _definePai,

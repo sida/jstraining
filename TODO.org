@@ -1,0 +1,10 @@
+#+TODO: TODO(t) DOING(i) WAIT(w) DONE(d)
+
+TODO
+
+* 点計算
+** DOING パターン分割
+*** TODO ファイル整理
+** TODO 点計算
+
+* UI
