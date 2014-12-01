@@ -25,49 +25,36 @@ var kresu = {};
 _u.each(paiListHash,function(v,k){
     my_util.print(k+":");
     my_util.println_dump(v);
-    kresu[k] = parse(v);
+    if (v.length>0){kresu[k] = parse(v);}
 });
 // 表示
+my_util.println("--");
 _u.each(kresu,function(v,k){
     my_util.print(k+":\n");
     my_util.println_dump(v);
 });
+my_util.println("--");
+var m = _u.values(kresu);
+my_util.println_dump(m);
+my_util.println("--");
+var mm = merge(m);
+my_util.println_dump(mm);
 
-/*
 
-sida@tristar:~/develop/jstraining$ node tes3.js
-start
--input---------
-[M1,M2,M3,M4,M4,M6,M6,S1,S2,P3,P3,P4,P5,P6]
---split kind
-MANZU:[M1,M2,M3,M4,M4,M6,M6]
-SOUZU:[S1,S2]
-PINZU:[P3,P3,P4,P5,P6]
-SHIFU:[]
-SANGEN:[]
-MANZU:
-[
-  [[M4,M4],[M6,M6],[M1,M2,M3]],
-  [[M1,M4],[M6,M6],[M2,M3,M4]],
-  [[M4,M4,M6,M6],[M1,M2,M3]],
-  [[M1,M4,M6,M6],[M2,M3,M4]]
-]
-SOUZU:
-[
-  [[S1,S2]]
-]
-PINZU:
-[
-  [[P3,P3],[P4,P5,P6]],
-  [[P3,P6],[P3,P4,P5]]
-]
-
-SHIFU:
-[[[]]]
-SANGEN:
-[[[]]]
-
-*/
+// 種類毎の結果の組み合わせを作る
+function merge(list){
+    return _u.reduce(list,function (l1,l2){
+	var ret = [];
+	_u.each(l1,function (v1){
+	    return _u.each(l2,function (v2){
+		var t = v1.concat(v2);
+		ret.push(t);
+		return;
+	    });
+	});
+	return ret;
+    });
+}
 
 function parse(inPaiList){
     if (inPaiList.length<3){return [[inPaiList]];}
