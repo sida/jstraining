@@ -1,0 +1,29 @@
+@startuml{状態遷移図game.png}
+
+' --> 下
+' -> 右
+
+state 半荘{
+  [*] --> 東場
+  東場 --> 南場
+  南場 --> [*]
+
+  東場 : do / 局
+  南場 : do / 局
+}
+
+state 局{
+  [*] --> TON_Player
+  TON_Player --> NAN_Player
+  NAN_Player --> SHA_Player
+  SHA_Player --> PEI_Player
+  PEI_Player --> TON_Player  
+
+  TON_Player : do / PlayerTurn
+  NAN_Player : do / PlayerTurn
+  SHA_Player : do / PlayerTurn
+  PEI_Player : do / PlayerTurn
+}
+
+
+@enduml

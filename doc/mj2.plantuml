@@ -1,0 +1,55 @@
+@startuml{状態遷移図テスト.png}
+
+' --> 下
+' -> 右
+
+[*] --> 状態A : 起動
+状態A : entry / xxx
+状態A : do / yyy
+状態A --> 半荘 : ボタン押下 [ON]
+半荘 --> 局
+半荘 --> [*]
+
+
+state 局{
+  [*] --> TON_Player
+  TON_Player --> NAN_Player
+  NAN_Player --> SHA_Player
+  SHA_Player --> PEI_Player
+  PEI_Player --> TON_Player  
+
+  TON_Player : do / PlayerTurn
+  NAN_Player : do / PlayerTurn
+  SHA_Player : do / PlayerTurn
+  PEI_Player : do / PlayerTurn
+}
+
+state PlayerTurn{
+  [*] --> 入力待ち : 自摸
+  入力待ち --> [*] : 打牌
+  入力待ち -> カン確認入力待ち : カン [手牌=カン可能]
+  入力待ち -> 和了確認表示 : [手牌=和了]
+  入力待ち --> 立直打牌入力待ち : [手牌=聴牌]
+  入力待ち : entry / 手牌の状態を確認
+  入力待ち : do / 手牌の状態で処理を分岐
+  入力待ち : do / 打牌選択
+  
+  立直打牌入力待ち --> [*] : 打牌選択 [打牌後の手牌=聴牌]
+  立直打牌入力待ち --> 立直不可表示 : 打牌選択 [打牌後の手牌<>聴牌]
+  立直打牌入力待ち --> 入力待ち : キャンセル
+
+  立直不可表示 --> 入力待ち : OK
+
+  和了確認表示 --> [*] : 和了宣言
+  和了確認表示 --> 入力待ち : キャンセル
+  
+  カン確認入力待ち --> カン確定 : カン選択
+  カン確認入力待ち --> 入力待ち : キャンセル
+
+  カン確定 --> 入力待ち : 自摸
+  カン確定 : do / カン公開
+  カン確定 : exit / 自摸
+}
+
+
+@enduml
