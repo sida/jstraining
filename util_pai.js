@@ -117,15 +117,16 @@ function merge(list){
 
 // 単一牌種の牌リストを面子に分割する全パターンのリストを作成する
 function splitMentu(inPaiList){
+    // 面子が取れるだけの牌がない
     if (inPaiList.length<3){return [[inPaiList]];}
     var result = {};
     // 先に対子を取った組み合せを作る
-    var toituPattern = searchAllToitu(inPaiList);
+    var toituPattern = searchAllToitu(inPaiList);// [[余り,対子]...]
     // 組み合せを作る
     _u.each(toituPattern,function(ll){
-	var rest = [];
-	rest.push(ll[1]);
-	_splitMentu(ll[0],rest,result);
+	var parsed = [];
+	parsed.push(ll[1]);
+	_splitMentu(ll[0],parsed,result);
     });
     // 元の牌リストそのままで組み合せを作る
     _splitMentu(inPaiList,[],result);
@@ -134,12 +135,16 @@ function splitMentu(inPaiList){
 }
 
 // splitMentuの本体。再帰する
+// restL : 未検査
+// parsedLL :
+// result : 結果を保存する
 function _splitMentu(restL,parsedLL,result){
     var listUpedRestLLL = listUpKotuSyuntu(restL);
     if (listUpedRestLLL.length==0){
-	// 引数を解析してももうなにもでなかったので引数を合成して返す
-	if (parsedLL.length==0){return;}
+	// // 引数を解析してももうなにもでなかったので引数を合成して返す
+	//if (parsedLL.length==0){return;}
 	if (restL.length>0){
+	    // 未検査の余りがあったらを抽出済みの面子リストの前に追加
 	    parsedLL.unshift(restL);
 	}
 	var key = mkLLKey(parsedLL);
@@ -188,10 +193,10 @@ function listToStringList(l){
 // とれる順子を全て洗い出す
 //  重複はしない
 function searchAllSyuntu(paiList){
-    // 三元牌と四風牌はスキップ
-    if (paiList.length>0){
-	if (_isShifu(paiList[0]) || _isSangen(paiList[0])){return [[],paiList];}
-    }
+    // // 三元牌と四風牌はスキップ
+    // if (paiList.length>0){
+    // 	if (_isShifu(paiList[0]) || _isSangen(paiList[0])){return [[],paiList];}
+    // }
     var retListList = [];
     var prevPai = null;
     for (var ii=0;ii<paiList.length;ii++){
@@ -237,7 +242,14 @@ function searchPaiNumIndex(list,start,num){
 }
 
 function getSyuntu(paiList,idx){
+
     var firstPai = paiList[idx];
+
+    // 三元牌と四風牌はスキップ
+    if (_isShifu(firstPai) || _isSangen(firstPai)){
+    	return [];
+    }
+
     var hitIdx1 = searchPaiNumIndex(paiList,idx,firstPai.getNum()+1);
     if (hitIdx1<0) {return [];}
     var hitIdx2 = searchPaiNumIndex(paiList,idx,firstPai.getNum()+2);
@@ -246,6 +258,7 @@ function getSyuntu(paiList,idx){
     ret.push(firstPai);
     ret.push(paiList[hitIdx1]);
     ret.push(paiList[hitIdx2]);
+
     return ret;
 }
 

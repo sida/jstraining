@@ -10,7 +10,10 @@ my_util.println("start");
 //var inPai = pai_util.strToPaiList('M1,M1,M2,M2,M3,M3,M3,M4,M4,M4,M5,M6');
 //var inPai = pai_util.strToPaiList('M1,M1,M2,M2,M3,M3,M3,M4,M4,M4,M5');
 //var inPai = pai_util.strToPaiList('M1,M1,M2,M2,M3,M3,M3,M4,M4,M4,M5,M6,M6,M6');
-var inPai = pai_util.strToPaiList('M1,S1,M2,S2,M3,P3,P3,P4,M4,M4,P5,M6,M6,P6');
+//var inPai = pai_util.strToPaiList('M1,S1,M2,S2,M3,P3,P3,P4,M4,M4,P5,M6,M6,P6');
+//var inPai = pai_util.strToPaiList('M1,M2,M3,M4,M4,M6,M6,S1,S4,P3,P3,P4,P6,P8');
+var inPai = pai_util.strToPaiList('M1,M2,M3,M4,M4,M6,M6,S1,S4,P3,G3,F7,F8,F9');
+//var inPai = pai_util.strToPaiList('M1,M3,M5,M7,M8,S6,S9,S1,S4,P3,G3,F7,F8,F9');
 // sort
 inPai.sort(pai_util.compare);
 
